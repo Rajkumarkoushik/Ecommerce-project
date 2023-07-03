@@ -1,5 +1,5 @@
 let cardsData =[
-    {id:1,title:"Fjallraven - Foldsack No. 1 Backpack, Fits 15 Laptops",price:109.95,description:"Your perfect pack for everyday use and walks in the forest. Stash your laptop (up to 15 inches) in the padded sleeve, your everyday",category:"men's clothing",image:"https://fakestoreapi.com/img/81fPKd-2AYL._AC_SL1500_.jpg",rating:{rate:3.9,count:120}},
+{id:1,title:"Fjallraven - Foldsack No. 1 Backpack, Fits 15 Laptops",price:109.95,description:"Your perfect pack for everyday use and walks in the forest. Stash your laptop (up to 15 inches) in the padded sleeve, your everyday",category:"men's clothing",image:"https://fakestoreapi.com/img/81fPKd-2AYL._AC_SL1500_.jpg",rating:{rate:3.9,count:120}},
 {id:2,title:"Mens Casual Premium Slim Fit T-Shirts ",price:22.3,description:"Slim-fitting style, contrast raglan long sleeve, three-button henley placket, light weight & soft fabric for breathable and comfortable wearing. And Solid stitched shirts with round neck made for durability and a great fit for casual fashion wear and diehard baseball fans. The Henley style round neckline includes a three-button placket.",category:"men's clothing",image:"https://fakestoreapi.com/img/71-3HjGNDUL._AC_SY879._SX._UX._SY._UY_.jpg",rating:{rate:4.1,count:259}},
 {id:3,title:"Mens Cotton Jacket",price:55.99,description:"great outerwear jackets for Spring/Autumn/Winter, suitable for many occasions, such as working, hiking, camping, mountain/rock climbing, cycling, traveling or other outdoors. Good gift choice for you or your family member. A warm hearted love to Father, husband or son in this thanksgiving or Christmas Day.",category:"men's clothing",image:"https://fakestoreapi.com/img/71li-ujtlUL._AC_UX679_.jpg",rating:{rate:4.7,count:500}},
 {id:4,title:"Mens Casual Slim Fit",price:15.99,description:"The color could be slightly different between on the screen and in practice. / Please note that body builds vary by person, therefore, detailed size information should be reviewed below on the product description.",category:"men's clothing",image:"https://fakestoreapi.com/img/71YXzeOuslL._AC_UY879_.jpg",rating:{rate:2.1,count:430}},
@@ -19,12 +19,10 @@ let cardsData =[
 {id:20,title:"DANVOUY Womens T Shirt Casual Cotton Short",price:12.99,description:"95%Cotton,5%Spandex, Features: Casual, Short Sleeve, Letter Print,V-Neck,Fashion Tees, The fabric is soft and has some stretch., Occasion: Casual/Office/Beach/School/Home/Street. Season: Spring,Summer,Autumn,Winter.",category:"women's clothing",image:"https://fakestoreapi.com/img/61pHAEJ4NML._AC_UX679_.jpg",rating:{rate:3.6,count:145}}
 ];
 
-
-
 let data = "";
 cardsData.map(function cardsFunction(items){
     data += `
-        <div class="col-lg-3" data-id="${items.id}">
+        <div class="col-lg-3">
             <div class="cards-product">
                 <img src=${items.image} alt="">
                 <h4>Title :- <span>${items.title}</span></h4>
@@ -32,7 +30,7 @@ cardsData.map(function cardsFunction(items){
                 <h6>Category :- <span>${items.category}</span></h6>    
                 <h6>Rating :- <span>${items.rating.rate}</span></h6>    
                 <h6>Count :- <span>${items.rating.count}</span></h6>
-                <button onclick="deleteButton(${items.id})">Delete</button>
+                <button onclick="addToCart(${items.id})">Add To Cart</button>
                     
             </div>
         </div>
@@ -40,57 +38,73 @@ cardsData.map(function cardsFunction(items){
     document.querySelector(".cards-ecommerce").innerHTML = data;
 });
 
+let emptyList = [];
+
+// Cart function
+function cartIcon(){
+    document.querySelector(".cart-items").classList.toggle("cart-items-active");
+    if(emptyList.length === 0){
+        document.querySelector(".list-item").innerHTML = `<img src="/assets/95974e121862329.Y3JvcCw5MjIsNzIxLDAsMTM5.png" alt="">`; 
+    }else{
+        let cartData = "";
+        emptyList.map(function cartFunction(items){
+            cartData += `
+                <div class="p-3" data-id="${items.id}">
+                    <div class="cartlist-items d-flex justify-content-between align-items-center">
+                       <div>
+                       <img src=${items.image} alt="">
+                       <button>+</button>
+                       <button>0</button>
+                       <button>-</button>
+                       </div>
+                        <div>
+                        <h6\ class="cart-title">Title :- <span>${items.title}</span></h6>
+                        <h6>Price :- <span>${items.price}</span></h6> 
+                         </div> 
+                        <i class="fa-solid fa-xmark" onclick="deleteButton(${items.id})"></i>       
+                    </div> 
+                </div>
+            `
+            document.querySelector(".list-item").innerHTML = cartData;
+      
+        }); 
+    };
+    };
+
+// Add to cart button 
+function addToCart(id){
+    const selectedItems = cardsData.find(function findItems(items){
+       return items.id === id;
+    });
+    if(selectedItems){
+        const findIndex = emptyList.findIndex(function indexFunction(items){
+            return items.id === id;
+        });
+        if(findIndex !==-1){
+            document.querySelector(".toast-notification").classList.add("toast-notification-active");
+            setTimeout(function timeOutFunction(){
+                document.querySelector(".toast-notification").classList.remove("toast-notification-active");
+            }, 2000);
+        }else{
+            emptyList.push(selectedItems);
+        };
+    };
+   
+    document.querySelector(".list-quantity").innerHTML = emptyList.length;
+};
+
 function deleteButton(id){
     const deleteItems = document.querySelector(`[data-id="${id}"]`);
     deleteItems.style.display = "none";
-    const filterArray = cardsData.filter(function filterFunction(items){
+    const filterArray = emptyList.filter(function filterFunction(items){
       return items.id !== id;
-    
     });
-    cardsData = filterArray;
-    console.log(cardsData);
+    emptyList.pop(filterArray)
+    emptyList = filterArray;
+    document.querySelector(".list-quantity").innerHTML = emptyList.length;
 };
 
 
-const stuData = [
-    {name : "yuuy", age: 20},
-    {name : "yuuy", age: 30},
-    {name :"yuuy", age: 10},
-    {name :"yuuy", age: 15},
-    {name: "yuuy", age: 25},
-    {name :"yuuy", age: 6},
-    {name :"yuuy", age: 22},
-    {name :"yuuy", age: 8},
-]
-// map 
-const mapData = stuData.map(function myFunction(items){
-    return items.age * 2;
-});
-console.log(mapData);
-
-// filter 
-const filterData = stuData.filter(function myFunction(items){
-    return items.age < 20;
-});
-console.log(filterData);
-
-// Foreach
-stuData.forEach(function myFunction(items){
-    console.log(items.age);
-});
-
-// Find
-const findData = stuData.find(function myFunction(items) {
-    return items.age > 20 ;
-});
-
-console.log(findData);
-
-// reduce
-const reduceData = stuData.reduce(function myFunction(name,items){
-    return items.age+name ;
-},0);
-console.log(reduceData);
 
 
 
